@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chart | canvas</title>
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			width: 100vw;
+			margin: 0 auto;
+			background-color: #222;
+		}
+
+		h2 {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform:translate(-50%, -50%);
+			margin: 0;
+			color: #fff;
+			font-family: Verdana;
+			font-weight: 100;
+			letter-spacing: 1px;
+			font-size: 40px
+		}
+
+		div {
+			position: relative;
+			margin: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<canvas class="chart" id="chart1" height="400" width="400" data-persent="50" data-line="50">SORRY</canvas>
+		<h2 id="percentsChart1"></h2>
+	</div>
+	
+	<div>
+		<canvas class="chart" id="chart2" height="400" width="400" data-persent="87" data-line="20">SORRY</canvas>
+		<h2 id="percentsChart2"></h2>
+	</div>
+	
+	<div>
+		<canvas class="chart" id="chart3" height="400" width="400" data-persent="23" data-line="20">SORRY</canvas>
+		<h2 id="percentsChart3"></h2>
+
+	<script>
+		let allCanvases    = document.getElementsByTagName('canvas'),
+		    chartSearching = false;
+		for (let i = 0; i <= allCanvases.length; i++) {
+			if(allCanvases[i].classList.contains('chart')===true) {
+				chartSearching = true;
+				break;
+			}
+		}
+
+		if(chartSearching===true) {
+			let allCharts = document.getElementsByClassName('chart');
+			for (let i = 0; i < allCharts.length; i++) {
+				let idCanvas = allCharts[i].id,
+				      canvas = document.getElementById(idCanvas),
+				      ctx    = canvas.getContext('2d'),
+				      per    = Math.floor(Math.random() * 100 + 1),
+				      // per    = canvas.getAttribute('data-persent') || 100,
+				      height = canvas.height,
+				      width  = canvas.width,
+				      line   = Math.floor(Math.random() * (80-5) + 5);
+				      //line   = canvas.getAttribute('data-line') || 20;
+				ctx.clearRect (0, 0, width, height);
+				ctx.beginPath();
+				ctx.strokeStyle = '#EEE';
+				ctx.arc(width/2, height/2, ((height + width)/2 - line)/2, 0, Math.PI*2);
+				ctx.lineWidth = line;
+				ctx.stroke();
+				let k       = 0;
+				    j       = 0.2;
+				function drawRing() {
+					ctx.beginPath();
+					let radian = 2*Math.PI*k/100;
+					ctx.strokeStyle = '#ff3333';
+					ctx.arc(width/2, height/2, ((height + width)/2 - line)/2, Math.PI*1.5, radian+1.5 * Math.PI);
+					/*ctx.lineWidth = canvas.getAttribute('data-line');*/
+					ctx.lineWidth = canvas.getAttribute(line);
+					ctx.lineCap = canvas.getAttribute('data-lineCap') || "round";
+					ctx.stroke();
+					if (k<per) {
+						k += j;
+						j += 0.001;
+						document.querySelector(`#percentsChart${i+1}`).innerHTML = `${~~k}%`
+					}else{
+						clearInterval(interval)
+					}
+				}
+			let interval = setInterval(drawRing, 1);
+			}
+		}
+		
+	</script>
+</body>
+</html>
